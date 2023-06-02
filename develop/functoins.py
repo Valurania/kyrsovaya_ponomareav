@@ -9,9 +9,8 @@ def operatoin_data_filer(operation_list):
     operation_id = "нет данных"
     operation_state = "нет данных"
     operation_code = "нет данных"
+
     for operation_dict in operation_list:
-
-
         if "date" in operation_dict.keys():
             operation_date = operation_dict['date']
         if "description" in operation_dict.keys():
@@ -44,13 +43,26 @@ def transformation_date(data_str):
     return f"{data_str[8:10]}.{data_str[5:7]}.{data_str[0:4]}"
 
 def mask_card(from_str):
-    if "Счет" in from_str:
-        return f"Счет **{from_str[-4:]}"
-    else:
-        return f"{from_str[:-17]} {from_str[-16:-12]} {from_str[-12:-10]}** **** {from_str[-4:]}"
+    from_str = from_str.split()
+    name = ' '.join(from_str[:-1])
+
+    chunk = 4
+    number = ''
+    for i in range(len(from_str[-1]) - 1, -1, -1):
+        if chunk == 0:
+            number += ' '
+            chunk = 4
+        if len(from_str[-1]) - 10 <= i <= len(from_str[-1]) - 5:
+            number += '*'
+        else:
+            number += from_str[-1][i]
+        chunk -= 1
+
+    return f"{name} {number[::-1]}"
 
 def mask_check(to):
-    return f" Cчет ****{to[-4:]}"
+    name = ' '.join(to.split()[:-1])
+    return f"{name} **{to[-4:]}"
 
 
 
